@@ -177,11 +177,11 @@ function App() {
 
       {/* Header */}
       <header className="relative z-10 pt-8 pb-4">
-        <div className="container mx-auto mb-4 px-4">
+        <div className="container mx-auto mb-8 px-4">
           <img
             src="/indiaCmgLogo.png"
             alt="India Chess Mind Group - Premier Chess Platform"
-            className="w-40 md:w-56 rounded-full mx-auto drop-shadow-2xl hover:scale-105 transition-transform duration-300"
+            className="w-30  w-30 lg:w-40  lg:w-40  rounded-full mx-auto drop-shadow-2xl hover:scale-105 transition-transform duration-300"
           />
         </div>
       </header>
@@ -316,6 +316,44 @@ function App() {
             </form>
           </div>
         </div>
+        <section class="sr-only">
+  <h2>About the Project</h2>
+  <p>
+    This project is an initiative focused on promoting chess education, player development,
+    and organized competitive opportunities in India, with a strong emphasis on grassroots
+    talent from Bihar. The platform aims to support chess players, students, academies,
+    schools, and sports organizations by providing structured training, tournament guidance,
+    and awareness about national and international chess standards.
+  </p>
+  <p>
+    The project is aligned with recognized chess bodies such as FIDE and AICF and works
+    towards building a sustainable ecosystem for chess coaching, mentorship, and sports
+    administration. It also serves as an informational and engagement platform for players,
+    parents, and institutions interested in professional chess development.
+  </p>
+</section>
+
+<section class="sr-only">
+  <h2>About the Owner</h2>
+  <p>
+    Raj Shekhar is a FIDE National Instructor (NI) and an International FIDE Rated Chess Player
+    with over 15 years of playing experience and more than a decade of coaching and mentorship.
+    He has represented Bihar at national-level championships and has participated in several
+    prestigious tournaments across India, including Delhi, Secunderabad, and Lucknow.
+  </p>
+  <p>
+    He serves as the Public Relations Officer (PRO) of the Chapra District Chess Association
+    and is the President of the Mauna Panchayat Khel Club under the Sports Department,
+    Government of Bihar. He has successfully organized multiple district and state-level
+    chess tournaments and actively works to identify and nurture young chess talent.
+  </p>
+  <p>
+    With an academic background in Economics and advanced training under elite mentorship,
+    Raj Shekhar combines strategic thinking, administrative leadership, and professional
+    coaching expertise to contribute to the long-term growth of chess in India.
+  </p>
+</section>
+
       </main>
 
       {/* Footer */}
@@ -323,7 +361,7 @@ function App() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-sm mx-auto text-gray-400">
-              © 2026 India Chess Mind Group. All rights reserved.
+              © 2026 India ChessMind Group. All rights reserved.
             </div>
             {/* <div className="flex gap-6">
               <a
