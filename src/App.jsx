@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import emailjs from "@emailjs/browser";
 import {
   FaFacebook,
   FaTwitter,
@@ -7,6 +8,8 @@ import {
   FaTrophy,
   FaUsers,
   FaGraduationCap,
+  FaCheckCircle,
+  FaTimesCircle,
 } from "react-icons/fa";
 
 function App() {
@@ -18,15 +21,86 @@ function App() {
     seconds: 0,
   });
 
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    contact_number: "",
+    message: "Hey I'm interested in your upcoming project/initiative"
+  });
+  const [errors, setErrors] = useState({
+    name: "",
+    email: "",
+    contact_number: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [modal, setModal] = useState({ show: false, type: '', message: '' });
+
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validatePhone = (phone) => !phone || /^[0-9]{10}$/.test(phone);
+  const validateName = (name) => name.trim().length >= 2;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const newErrors = { name: "", email: "", contact_number: "" };
+
+    if (!validateName(formData.name))
+      newErrors.name = "Name must be at least 2 characters";
+    if (!validateEmail(formData.email))
+      newErrors.email = "Invalid email address";
+    if (!validatePhone(formData.contact_number))
+      newErrors.contact_number = "Phone must be 10 digits";
+
+    setErrors(newErrors);
+    if (Object.values(newErrors).some((err) => err)) return;
+
+    setLoading(true);
+    try {
+      await emailjs.send(
+        import.meta.env.VITE_EMAIL_SERVICE_ID,
+        import.meta.env.VITE_EMAIL_TEMPLATE_ID_CONTACT,
+        {
+          name: formData.name,
+          email: formData.email,
+          contact_number: formData.contact_number || "Not provided",
+          message: formData.message,
+        },
+        import.meta.env.VITE_EMAIL_PUBLIC_KEY,
+      );
+
+      await emailjs.send(
+        import.meta.env.VITE_EMAIL_SERVICE_ID,
+        import.meta.env.VITE_EMAIL_TEMPLATE_ID_AUTOREPLY,
+        { name: formData.name, title: "", email: formData.email },
+        import.meta.env.VITE_EMAIL_PUBLIC_KEY,
+      );
+
+      setModal({ show: true, type: 'success', message: "Thank you! We'll get back to you soon." });
+      setFormData({ name: "", email: "", contact_number: "", message: "Hey I'm interested in your upcoming project/initiative" });
+    } catch (error) {
+      console.error('Email send error:', error);
+      setModal({ show: true, type: 'error', message: 'Failed to send message. Please try again.' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
   const pieces = ["♔", "♕", "♖", "♗", "♘", "♙", "♚", "♛"];
-  const [positions] = useState(() => 
+  const [positions] = useState(() =>
     Array.from({ length: 25 }, (_, i) => ({
       top: Math.random() * 90,
       left: Math.random() * 90,
-      size: ["text-6xl", "text-7xl", "text-8xl", "text-9xl"][Math.floor(Math.random() * 4)],
+      size: ["text-6xl", "text-7xl", "text-8xl", "text-9xl"][
+        Math.floor(Math.random() * 4)
+      ],
       piece: pieces[Math.floor(Math.random() * pieces.length)],
-      delay: i % 2 === 0
-    }))
+      delay: i % 2 === 0,
+    })),
   );
 
   useEffect(() => {
@@ -53,6 +127,30 @@ function App() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-[#083C5D] via-[#0a4d75] to-[#083C5D] text-white relative overflow-hidden">
+      {/* Modal */}
+      {modal.show && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" onClick={() => setModal({ show: false, type: '', message: '' })}>
+          <div className="bg-white rounded-2xl p-8 max-w-md mx-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <div className="text-center">
+              {modal.type === 'success' ? (
+                <FaCheckCircle className="text-6xl text-green-500 mx-auto mb-4" />
+              ) : (
+                <FaTimesCircle className="text-6xl text-red-500 mx-auto mb-4" />
+              )}
+              <h3 className={`text-2xl font-bold mb-2 ${modal.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
+                {modal.type === 'success' ? 'Success!' : 'Error!'}
+              </h3>
+              <p className="text-gray-700 mb-6">{modal.message}</p>
+              <button
+                onClick={() => setModal({ show: false, type: '', message: '' })}
+                className="px-6 py-2 bg-gradient-to-r from-[#083C5D] to-[#0a4d75] text-white rounded-lg hover:scale-105 transition-transform"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Gradient Orbs */}
       <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-gradient-to-br from-blue-400/20 to-transparent rounded-full blur-3xl"></div>
       <div className="absolute top-20 right-10 w-[300px] h-[300px] bg-gradient-to-bl from-cyan-300/15 to-transparent rounded-full blur-2xl"></div>
@@ -69,7 +167,7 @@ function App() {
         {positions.map((pos, i) => (
           <div
             key={i}
-            className={`absolute ${pos.size} ${pos.delay ? 'animate-float-delayed' : 'animate-float'} transition-all duration-1000`}
+            className={`absolute ${pos.size} ${pos.delay ? "animate-float-delayed" : "animate-float"} transition-all duration-1000`}
             style={{ top: `${pos.top}%`, left: `${pos.left}%` }}
           >
             {pos.piece}
@@ -155,22 +253,68 @@ function App() {
             ))}
           </div>
 
-          {/* Email Notification */}
-          {/* <div className="pt-6">
-            <p className="text-gray-400 text-sm md:text-base mb-3">
-              Get notified when we launch
+          {/* Get Notified Form */}
+          <div className="pt-6">
+            <p className="text-gray-400 text-sm md:text-base mb-6 text-center">
+              Stay updated! Get notified when we launch.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 backdrop-blur-sm"
-              />
-              <button className="px-6 py-3 bg-gradient-to-r from-white to-blue-50 text-[#083C5D] font-semibold rounded-lg hover:from-blue-50 hover:to-white transition-all duration-300 hover:scale-105 shadow-lg">
-                Notify Me
+            <form
+              onSubmit={handleSubmit}
+              className="max-w-md mx-auto space-y-5 bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20 shadow-lg"
+            >
+              <div className="relative">
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  placeholder="Your Name *"
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300"
+                />
+                {errors.name && (
+                  <p className="text-red-400 text-sm mt-1">{errors.name}</p>
+                )}
+              </div>
+
+              <div className="relative">
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Your Email *"
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300"
+                />
+                {errors.email && (
+                  <p className="text-red-400 text-sm mt-1">{errors.email}</p>
+                )}
+              </div>
+
+              <div className="relative">
+                <input
+                  type="tel"
+                  name="contact_number"
+                  value={formData.contact_number}
+                  onChange={handleChange}
+                  placeholder="Contact Number (Optional)"
+                  className="w-full px-4 py-3 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-300"
+                />
+                {errors.contact_number && (
+                  <p className="text-red-400 text-sm mt-1">
+                    {errors.contact_number}
+                  </p>
+                )}
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 bg-[#ffff] text-[#083C5D] font-semibold rounded-lg shadow-lg hover:scale-105 transform transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {loading ? "Sending..." : "Notify Me"}
               </button>
-            </div>
-          </div> */}
+            </form>
+          </div>
         </div>
       </main>
 
@@ -179,7 +323,7 @@ function App() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="text-sm mx-auto text-gray-400">
-              © 2025 India Chess Mind Group. All rights reserved.
+              © 2026 India Chess Mind Group. All rights reserved.
             </div>
             {/* <div className="flex gap-6">
               <a
