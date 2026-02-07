@@ -192,7 +192,7 @@ function App() {
           {/* Title */}
           <div className="space-y-4 animate-fade-in">
             <h1 className="text-5xl md:text-7xl font-bold bg-gradient-to-r from-white via-blue-100 to-cyan-200 bg-clip-text text-transparent leading-tight">
-              India Chess Mind Group
+              India ChessMind Group
             </h1>
             <p className="text-xl md:text-3xl font-light bg-gradient-to-r from-gray-200 to-blue-200 bg-clip-text text-transparent">
               India's Premier Chess Platform
