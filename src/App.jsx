@@ -180,7 +180,7 @@ function App() {
         <div className="container mx-auto mb-8 px-4">
           <img
             src="/indiaCmgLogo.png"
-            alt="India Chess Mind Group - Premier Chess Platform"
+            alt="India ChessMind Group - Premier Chess Platform"
             className="w-30  w-30 lg:w-40  lg:w-40  rounded-full mx-auto drop-shadow-2xl hover:scale-105 transition-transform duration-300"
           />
         </div>
