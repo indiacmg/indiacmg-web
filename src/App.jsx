@@ -332,7 +332,6 @@ function App() {
     parents, and institutions interested in professional chess development.
   </p>
 </section>
-
 <section class="sr-only">
   <h2>About the Owner</h2>
   <p>
