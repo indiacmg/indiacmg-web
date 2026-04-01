@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 
 function App() {
-  const targetDate = new Date("2026-04-01T00:00:00").getTime();
+  const targetDate = new Date("2026-04-20T00:00:00").getTime();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
@@ -205,6 +205,12 @@ function App() {
             India. Discover tournaments, coaching, scholarships, and grow your
             chess journey with us.
           </p>
+
+          {/* Delay Notice */}
+          <div className="max-w-2xl mx-auto bg-yellow-500/10 border border-yellow-400/30 rounded-xl px-6 py-4 text-sm md:text-base text-yellow-200 leading-relaxed">
+            <span className="font-semibold text-yellow-300">📢 Launch Update: </span>
+            Due to some unexpected circumstances, we were unable to launch on our previously announced date. We sincerely apologize for the delay. The new expected launch date is <span className="font-semibold text-white">before 20 April 2026</span>. Thank you for your patience and continued support!
+          </div>
 
           {/* Countdown Timer */}
           <div className="py-8">
