@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 
 function App() {
-  const targetDate = new Date("2026-04-20T00:00:00").getTime();
+  const targetDate = new Date("2026-05-01T00:00:00").getTime();
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
     hours: 0,
